@@ -39,13 +39,20 @@ namespace ConsoleApp3.CRUD
                     };
                     _db.Markets.Add(market);
                     await _db.SaveChangesAsync();
-                    await _carModelRepository.CreateCarModel(address + cells[i - 1].GetAttribute("href"), market, brand.Id);
+                    await _carModelRepository.CreateCarModel(address + cells[i - 1].GetAttribute("href"), market);
                 }
                 await _db.SaveChangesAsync();
             }
             else
             {
-                await _carModelRepository.CreateCarModel(address, brand.Id);
+                var market = new Market()
+                {
+                    Name = brand.Name,
+                    BrandId = brand.Id
+                };
+                _db.Markets.Add(market);
+                await _db.SaveChangesAsync();
+                await _carModelRepository.CreateCarModel(address, market);
             }
         }
     }

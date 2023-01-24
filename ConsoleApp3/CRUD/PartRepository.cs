@@ -1,4 +1,5 @@
 ﻿using AngleSharp;
+using ConsoleApp3.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace ConsoleApp3.CRUD
             config = Configuration.Default.WithDefaultLoader();
             context = BrowsingContext.New(config);
         }
-        public async Task CreatePart(string address, int subPartId, int primaryPartId, int complectationId, int carModelId)
+        public async Task CreatePart(string address, SubPart subPart)
         {
 
         }

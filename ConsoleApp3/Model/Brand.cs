@@ -13,6 +13,5 @@ namespace ConsoleApp3.Model
         public int Id { get; set; }
         public string Name { get; set; }
         ICollection<Market> Markets { get; set; }
-        ICollection<CarModel> CarModels { get; set; }
     }
 }

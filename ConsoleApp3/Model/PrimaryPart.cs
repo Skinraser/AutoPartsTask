@@ -14,6 +14,6 @@ namespace ConsoleApp3.Model
         public int Id { get; set; }
         public string Name { get; set; }
         public int? ComplectationId { get; set; }
-        public int CarModelId { get; set; }
+        public ICollection<SubPart> SubParts { get; set; }
     }
 }

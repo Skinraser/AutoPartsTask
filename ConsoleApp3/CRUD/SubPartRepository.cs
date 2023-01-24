@@ -22,7 +22,7 @@ namespace ConsoleApp3.CRUD
             _partRepository = new PartRepository();
         }
 
-        public async Task CreateSubPart(string address, int primaryPartId, int complectationId, int carModelId)
+        public async Task CreateSubPart(string address, PrimaryPart primaryPart, Complectation complectation, CarModel carModel)
         {
             var document = await _context.OpenAsync(address);
             address = "https://www.ilcats.ru";
@@ -42,13 +42,11 @@ namespace ConsoleApp3.CRUD
                             Name = name,
                             Revision = subCells[j].GetElementsByClassName("revision").FirstOrDefault()?.TextContent,
                             Usage = subCells[j].GetElementsByClassName("usage").FirstOrDefault()?.TextContent,
-                            CarModelId = carModelId,
-                            PrimaryPartId = primaryPartId,
-                            ComplectationId = complectationId
+                            PrimaryPartId = primaryPart.Id,
                         };
                         _db.SubParts.Add(subPart);
                         await _db.SaveChangesAsync();
-                        await _partRepository.CreatePart(address + subCells[j].Children[0].Children[0].GetAttribute("href"), subPart.Id, primaryPartId, carModelId);
+                        await _partRepository.CreatePart(address + subCells[j].Children[0].Children[0].GetAttribute("href"), subPart);
                     }
                 }
                 else
@@ -58,20 +56,18 @@ namespace ConsoleApp3.CRUD
                         Name = name,
                         Revision = cells[i].GetElementsByClassName("revision").FirstOrDefault()?.TextContent,
                         Usage = cells[i].GetElementsByClassName("usage").FirstOrDefault()?.TextContent,
-                        CarModelId = carModelId,
-                        PrimaryPartId = primaryPartId,
-                        ComplectationId= complectationId
+                        PrimaryPartId = primaryPart.Id,
                     };
                     _db.SubParts.Add(subPart);
                     await _db.SaveChangesAsync();
-                    await _partRepository.CreatePart(address + cells[i].GetAttribute("href"), subPart.Id, primaryPartId, carModelId);
+                    await _partRepository.CreatePart(address + cells[i].GetAttribute("href"), subPart);
                 }
             }
             await _db.SaveChangesAsync();
 
         }
     
-        public async Task CreateSubPart(string address, int primaryPartId, int carModelId)
+        public async Task CreateSubPart(string address, PrimaryPart primaryPart, CarModel carModel)
         {
             var document = await _context.OpenAsync(address);
             address = "https://www.ilcats.ru";
@@ -91,12 +87,11 @@ namespace ConsoleApp3.CRUD
                             Name = name,
                             Revision = subCells[j].GetElementsByClassName("revision").FirstOrDefault()?.TextContent,
                             Usage = subCells[j].GetElementsByClassName("usage").FirstOrDefault()?.TextContent,
-                            CarModelId = carModelId,
-                            PrimaryPartId = primaryPartId,
+                            PrimaryPartId = primaryPart.Id,
                         };
                         _db.SubParts.Add(subPart);
                         await _db.SaveChangesAsync();
-                        await _partRepository.CreatePart(address + subCells[j].Children[0].Children[0].GetAttribute("href"), subPart.Id, primaryPartId, carModelId);
+                        await _partRepository.CreatePart(address + subCells[j].Children[0].Children[0].GetAttribute("href"), subPart.Id, primaryPart.Id, carModel.Id);
                     }
                 }
                 else
@@ -106,12 +101,11 @@ namespace ConsoleApp3.CRUD
                         Name = name,
                         Revision = cells[i].GetElementsByClassName("revision").FirstOrDefault()?.TextContent,
                         Usage = cells[i].GetElementsByClassName("usage").FirstOrDefault()?.TextContent,
-                        CarModelId = carModelId,
-                        PrimaryPartId = primaryPartId,
+                        PrimaryPartId = primaryPart.Id,
                     };
                     _db.SubParts.Add(subPart);
                     await _db.SaveChangesAsync();
-                    await _partRepository.CreatePart(address + cells[i].GetAttribute("href"), subPart.Id, primaryPartId, carModelId);
+                    await _partRepository.CreatePart(address + cells[i].GetAttribute("href"), subPart.Id, primaryPart.Id, carModel.Id);
                 }
             }
             await _db.SaveChangesAsync(); 

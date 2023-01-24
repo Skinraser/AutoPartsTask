@@ -21,7 +21,7 @@ namespace ConsoleApp3.CRUD
             _context = BrowsingContext.New(_config);
             _complectationRepository = new ComplectationRepository();
         }
-        public async Task CreateCarModel(string address, Market market, int brandId)
+        public async Task CreateCarModel(string address, Market market)
         {
             var document = await _context.OpenAsync(address);
             address = "https://www.ilcats.ru";
@@ -39,12 +39,11 @@ namespace ConsoleApp3.CRUD
                         ProductionYear = headerCells[i - 1].Children[1].Children[j].GetElementsByClassName("dateRange").FirstOrDefault()?.TextContent,
                         Type = complectation ??= headerCells[i - 1].Children[1].Children[j].GetElementsByClassName("modelCode").FirstOrDefault()?.TextContent, 
                         MarketId = market.Id,
-                        BrandId = brandId
                     };
                     _db.CarModels.Add(carModel);
                     await _db.SaveChangesAsync();
                     var adress = headerCells[i - 1].Children[1].Children[j].Children[0].Children[0].GetAttribute("href");
-                    await _complectationRepository.CreateComplectation(address + headerCells[i - 1].Children[1].Children[j].Children[0].Children[0].GetAttribute("href"), carModel.Id);
+                    await _complectationRepository.CreateComplectation(address + headerCells[i - 1].Children[1].Children[j].Children[0].Children[0].GetAttribute("href"), carModel);
                 }
             }
             await _db.SaveChangesAsync();
@@ -66,11 +65,11 @@ namespace ConsoleApp3.CRUD
                         Code = headerCells[i - 1].Children[1].Children[j].Children[0].TextContent,
                         ProductionYear = headerCells[i - 1].Children[1].Children[j].GetElementsByClassName("dateRange").FirstOrDefault()?.TextContent,
                         Type = complectation ??= headerCells[i - 1].Children[1].Children[j].GetElementsByClassName("modelCode").FirstOrDefault()?.TextContent,
-                        BrandId = brandId
+                        
                     };
                     _db.CarModels.Add(carModel);
                     await _db.SaveChangesAsync();
-                    await _complectationRepository.CreateComplectation(address + headerCells[i - 1].Children[1].Children[j].Children[0].Children[0].GetAttribute("href"), carModel.Id);
+                    await _complectationRepository.CreateComplectation(address + headerCells[i - 1].Children[1].Children[j].Children[0].Children[0].GetAttribute("href"), carModel);
                 }
             }
             await _db.SaveChangesAsync();

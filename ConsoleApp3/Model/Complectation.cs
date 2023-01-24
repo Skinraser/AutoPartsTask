@@ -27,5 +27,6 @@ namespace ConsoleApp3.Model
         public string? FuelInduction { get; set; }
         public string? BuildingCondition { get; set; }
         public int CarModelId { get; set; }
+        public ICollection<PrimaryPart> PrimaryParts { get; set; }
     }
 }

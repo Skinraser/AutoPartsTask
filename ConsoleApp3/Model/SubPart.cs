@@ -16,7 +16,6 @@ namespace ConsoleApp3.Model
         public string? Revision { get; set; }
         public string? Usage { get; set; }
         public int PrimaryPartId { get; set; }
-        public int? ComplectationId { get; set; }
-        public int CarModelId { get; set; }
+        public ICollection<Part> Parts { get; set; }
     }
 }

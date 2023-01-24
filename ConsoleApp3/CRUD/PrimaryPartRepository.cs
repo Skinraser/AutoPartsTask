@@ -21,7 +21,7 @@ namespace ConsoleApp3.CRUD
             _context = BrowsingContext.New(_config);
             _subPartRepository = new SubPartRepository();
         }
-        public async Task CreatePrimaryPart(string address, int carModelId, int complectationId)
+        public async Task CreatePrimaryPart(string address, CarModel carModel, Complectation complectation)
         {
             var document = await _context.OpenAsync(address);
             if (document.QuerySelector("h1").TextContent == "Выбор группы запчастей")
@@ -34,17 +34,16 @@ namespace ConsoleApp3.CRUD
                     var primaryPart = new PrimaryPart()
                     {
                         Name = cells[i].TextContent,
-                        CarModelId = carModelId,
-                        ComplectationId = complectationId,
+                        ComplectationId = complectation.Id,
                     };
                     _db.PrimaryParts.Add(primaryPart);
                     await _db.SaveChangesAsync();
-                    await _subPartRepository.CreateSubPart(address + cells[i].GetAttribute("href"), primaryPart.Id, complectationId, carModelId);
+                    await _subPartRepository.CreateSubPart(address + cells[i].GetAttribute("href"), primaryPart, complectation, carModel);
                 }
                 await _db.SaveChangesAsync();
             }
         }
-        public async Task CreatePrimaryPart(string address, int carModelId)
+        public async Task CreatePrimaryPart(string address, CarModel carModel)
         {
             var document = await _context.OpenAsync(address);
             if (document.QuerySelector("h1").TextContent == "Выбор группы запчастей")
@@ -57,11 +56,10 @@ namespace ConsoleApp3.CRUD
                     var primaryPart = new PrimaryPart()
                     {
                         Name = cells[i].TextContent,
-                        CarModelId = carModelId,
                     };
                     _db.PrimaryParts.Add(primaryPart);
                     await _db.SaveChangesAsync();
-                    await _subPartRepository.CreateSubPart(address + cells[i].GetAttribute("href"), primaryPart.Id, carModelId);
+                    await _subPartRepository.CreateSubPart(address + cells[i].GetAttribute("href"), primaryPart, carModel);
                 }
                 await _db.SaveChangesAsync();
             }
