@@ -10,21 +10,21 @@ namespace ConsoleApp3.CRUD
 {
     public class MarketRepository
     {
-        AutoPartsTaskContext db;
-        IConfiguration config;
-        IBrowsingContext context;
-        CarModelRepository carModelRepository;
+        AutoPartsTaskContext _db;
+        IConfiguration _config;
+        IBrowsingContext _context;
+        CarModelRepository _carModelRepository;
         
         public MarketRepository()
         {
-            db = new AutoPartsTaskContext();
-            config = Configuration.Default.WithDefaultLoader();
-            context = BrowsingContext.New(config);
-            carModelRepository = new CarModelRepository();
+            _db = new AutoPartsTaskContext();
+            _config = Configuration.Default.WithDefaultLoader();
+            _context = BrowsingContext.New(_config);
+            _carModelRepository = new CarModelRepository();
         }
         public async Task CreateMarket(string address, Brand brand)
         {
-            var document = await context.OpenAsync(address);
+            var document = await _context.OpenAsync(address);
             if (document.QuerySelector("h1").TextContent == "Выбор рынка")
             {
                 address = "https://www.ilcats.ru";
@@ -37,15 +37,15 @@ namespace ConsoleApp3.CRUD
                         Name = brand.Name + " " + cells[i-1].TextContent,
                         BrandId = brand.Id
                     };
-                    db.Markets.Add(market);
-                    await db.SaveChangesAsync();
-                    await carModelRepository.CreateCarModel(address + cells[i - 1].GetAttribute("href"), market, brand.Id);
+                    _db.Markets.Add(market);
+                    await _db.SaveChangesAsync();
+                    await _carModelRepository.CreateCarModel(address + cells[i - 1].GetAttribute("href"), market, brand.Id);
                 }
-                await db.SaveChangesAsync();
+                await _db.SaveChangesAsync();
             }
             else
             {
-                await carModelRepository.CreateCarModel(address, brand.Id);
+                await _carModelRepository.CreateCarModel(address, brand.Id);
             }
         }
     }

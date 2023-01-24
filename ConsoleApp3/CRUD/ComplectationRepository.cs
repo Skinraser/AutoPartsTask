@@ -10,20 +10,20 @@ namespace ConsoleApp3.CRUD
 {
     public class ComplectationRepository
     {
-        AutoPartsTaskContext db;
-        IConfiguration config;
-        IBrowsingContext context;
-        PrimaryPartRepository primaryPartRepository;
+        AutoPartsTaskContext _db;
+        IConfiguration _config;
+        IBrowsingContext _context;
+        PrimaryPartRepository _primaryPartRepository;
         public ComplectationRepository()
         {
-            db = new AutoPartsTaskContext();
-            config = Configuration.Default.WithDefaultLoader();
-            context = BrowsingContext.New(config);
-            primaryPartRepository = new PrimaryPartRepository();
+            _db = new AutoPartsTaskContext();
+            _config = Configuration.Default.WithDefaultLoader();
+            _context = BrowsingContext.New(_config);
+            _primaryPartRepository = new PrimaryPartRepository();
         }
         public async Task CreateComplectation(string address, int carModelId)
         {
-            var document = await context.OpenAsync(address);
+            var document = await _context.OpenAsync(address);
             if (document.QuerySelector("h1").TextContent == "Выбор комплектации автомобиля" || document.QuerySelector("h1").TextContent == "Выбор модификации")
             {
                 address = "https://www.ilcats.ru";
@@ -40,9 +40,9 @@ namespace ConsoleApp3.CRUD
                             Name = cells[k].TextContent,
                             CarModelId = carModelId,
                         };
-                        db.Complectations.Add(complectation);
-                        await db.SaveChangesAsync();
-                        await primaryPartRepository.CreatePrimaryPart(address + cells[k].Children[0].GetAttribute("href"), carModelId, complectation.Id);
+                        _db.Complectations.Add(complectation);
+                        await _db.SaveChangesAsync();
+                        await _primaryPartRepository.CreatePrimaryPart(address + cells[k].Children[0].GetAttribute("href"), carModelId, complectation.Id);
                     }
                 }
                 else
@@ -71,17 +71,17 @@ namespace ConsoleApp3.CRUD
                                 CarModelId = carModelId,
 
                             };
-                            db.Complectations.Add(complectation);
-                            await primaryPartRepository.CreatePrimaryPart(address, carModelId, complectation.Id);
-                            await db.SaveChangesAsync();
+                            _db.Complectations.Add(complectation);
+                            await _db.SaveChangesAsync();
+                            await _primaryPartRepository.CreatePrimaryPart(address + cells[i].Children[j].Children[0].Children[0].Children[0].GetAttribute("href"), carModelId, complectation.Id);
                         }
                     }
-                    await db.SaveChangesAsync();
+                    await _db.SaveChangesAsync();
                 }
             }
             else
             {
-                await primaryPartRepository.CreatePrimaryPart(address, carModelId);
+                await _primaryPartRepository.CreatePrimaryPart(address, carModelId);
             }
         }
     }

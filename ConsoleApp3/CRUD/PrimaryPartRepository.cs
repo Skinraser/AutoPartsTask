@@ -10,20 +10,20 @@ namespace ConsoleApp3.CRUD
 {
     public class PrimaryPartRepository
     {
-        AutoPartsTaskContext db;
-        IConfiguration config;
-        IBrowsingContext context;
-        SubPartRepository subPartRepository;
+        AutoPartsTaskContext _db;
+        IConfiguration _config;
+        IBrowsingContext _context;
+        SubPartRepository _subPartRepository;
         public PrimaryPartRepository()
         {
-            db = new AutoPartsTaskContext();
-            config = Configuration.Default.WithDefaultLoader();
-            context = BrowsingContext.New(config);
-            subPartRepository = new SubPartRepository();
+            _db = new AutoPartsTaskContext();
+            _config = Configuration.Default.WithDefaultLoader();
+            _context = BrowsingContext.New(_config);
+            _subPartRepository = new SubPartRepository();
         }
         public async Task CreatePrimaryPart(string address, int carModelId, int complectationId)
         {
-            var document = await context.OpenAsync(address);
+            var document = await _context.OpenAsync(address);
             if (document.QuerySelector("h1").TextContent == "Выбор группы запчастей")
             {
                 address = "https://www.ilcats.ru";
@@ -37,16 +37,16 @@ namespace ConsoleApp3.CRUD
                         CarModelId = carModelId,
                         ComplectationId = complectationId,
                     };
-                    db.PrimaryParts.Add(primaryPart);
-                    await db.SaveChangesAsync();
-                    await subPartRepository.CreateSubPart(address + cells[i].GetAttribute("href"), primaryPart.Id, complectationId, carModelId);
+                    _db.PrimaryParts.Add(primaryPart);
+                    await _db.SaveChangesAsync();
+                    await _subPartRepository.CreateSubPart(address + cells[i].GetAttribute("href"), primaryPart.Id, complectationId, carModelId);
                 }
-                await db.SaveChangesAsync();
+                await _db.SaveChangesAsync();
             }
         }
         public async Task CreatePrimaryPart(string address, int carModelId)
         {
-            var document = await context.OpenAsync(address);
+            var document = await _context.OpenAsync(address);
             if (document.QuerySelector("h1").TextContent == "Выбор группы запчастей")
             {
                 address = "https://www.ilcats.ru";
@@ -59,11 +59,11 @@ namespace ConsoleApp3.CRUD
                         Name = cells[i].TextContent,
                         CarModelId = carModelId,
                     };
-                    db.PrimaryParts.Add(primaryPart);
-                    await db.SaveChangesAsync();
-                    await subPartRepository.CreateSubPart(address + cells[i].GetAttribute("href"), primaryPart.Id, carModelId);
+                    _db.PrimaryParts.Add(primaryPart);
+                    await _db.SaveChangesAsync();
+                    await _subPartRepository.CreateSubPart(address + cells[i].GetAttribute("href"), primaryPart.Id, carModelId);
                 }
-                await db.SaveChangesAsync();
+                await _db.SaveChangesAsync();
             }
         }
     }

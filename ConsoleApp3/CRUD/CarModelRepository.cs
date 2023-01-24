@@ -10,20 +10,20 @@ namespace ConsoleApp3.CRUD
 {
     public class CarModelRepository
     {
-        AutoPartsTaskContext db;
-        IConfiguration config;
-        IBrowsingContext context;
-        ComplectationRepository complectationRepository;
+        AutoPartsTaskContext _db;
+        IConfiguration _config;
+        IBrowsingContext _context;
+        ComplectationRepository _complectationRepository;
         public CarModelRepository()
         {
-            db = new AutoPartsTaskContext();
-            config = Configuration.Default.WithDefaultLoader();
-            context = BrowsingContext.New(config);
-            complectationRepository = new ComplectationRepository();
+            _db = new AutoPartsTaskContext();
+            _config = Configuration.Default.WithDefaultLoader();
+            _context = BrowsingContext.New(_config);
+            _complectationRepository = new ComplectationRepository();
         }
         public async Task CreateCarModel(string address, Market market, int brandId)
         {
-            var document = await context.OpenAsync(address);
+            var document = await _context.OpenAsync(address);
             address = "https://www.ilcats.ru";
             var headerCellSelector = "div.Multilist > div.List";
             var headerCells = document.QuerySelectorAll(headerCellSelector);
@@ -41,17 +41,17 @@ namespace ConsoleApp3.CRUD
                         MarketId = market.Id,
                         BrandId = brandId
                     };
-                    db.CarModels.Add(carModel);
-                    await db.SaveChangesAsync();
+                    _db.CarModels.Add(carModel);
+                    await _db.SaveChangesAsync();
                     var adress = headerCells[i - 1].Children[1].Children[j].Children[0].Children[0].GetAttribute("href");
-                    await complectationRepository.CreateComplectation(address + headerCells[i - 1].Children[1].Children[j].Children[0].Children[0].GetAttribute("href"), carModel.Id);
+                    await _complectationRepository.CreateComplectation(address + headerCells[i - 1].Children[1].Children[j].Children[0].Children[0].GetAttribute("href"), carModel.Id);
                 }
             }
-            await db.SaveChangesAsync();
+            await _db.SaveChangesAsync();
         }
         public async Task CreateCarModel(string address, int brandId)
         {
-            var document = await context.OpenAsync(address);
+            var document = await _context.OpenAsync(address);
             address = "https://www.ilcats.ru";
             var headerCellSelector = "div.Multilist > div.List";
             var headerCells = document.QuerySelectorAll(headerCellSelector);
@@ -68,12 +68,12 @@ namespace ConsoleApp3.CRUD
                         Type = complectation ??= headerCells[i - 1].Children[1].Children[j].GetElementsByClassName("modelCode").FirstOrDefault()?.TextContent,
                         BrandId = brandId
                     };
-                    db.CarModels.Add(carModel);
-                    await db.SaveChangesAsync();
-                    await complectationRepository.CreateComplectation(address + headerCells[i - 1].Children[1].Children[j].Children[0].Children[0].GetAttribute("href"), carModel.Id);
+                    _db.CarModels.Add(carModel);
+                    await _db.SaveChangesAsync();
+                    await _complectationRepository.CreateComplectation(address + headerCells[i - 1].Children[1].Children[j].Children[0].Children[0].GetAttribute("href"), carModel.Id);
                 }
             }
-            await db.SaveChangesAsync();
+            await _db.SaveChangesAsync();
         }
     }
 }
