@@ -25,12 +25,14 @@ namespace ConsoleApp3.Repositories
             _context = BrowsingContext.New(_config);
             _marketRepository = new MarketRepository();
         }
+
+        // Creation of Brand Entity 
         public async Task Create(string address)
         {
             var document = await _context.OpenAsync(address);
             var cellSelector = " div.CatalogGroup a";
             var cells = document.QuerySelectorAll(cellSelector);
-            for (var i = 1; i<= cells.Length; i++)
+            for (var i = 1; i<= cells.Length; i++) // Iterations through brands on website
             {
                 var brand = new Brand()
                 {
@@ -38,7 +40,7 @@ namespace ConsoleApp3.Repositories
                 };
                 _db.Brands.Add(brand);
                 await _db.SaveChangesAsync();
-                await _marketRepository.Create(address + cells[i-1].GetAttribute("href"), brand);
+                await _marketRepository.Create(address + cells[i-1].GetAttribute("href"), brand); // Calling method of creation of the Market entity for brand
             }
             await _db.SaveChangesAsync();
 

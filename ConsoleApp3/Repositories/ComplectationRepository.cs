@@ -22,18 +22,19 @@ namespace ConsoleApp3.Repositories
             _context = BrowsingContext.New(_config);
             _primaryPartRepository = new PrimaryPartRepository();
         }
+        // Creation of Complectaion entity of certain car model
         public async Task Create(string address, CarModel carModel)
         {
             var document = await _context.OpenAsync(address);
-            if (document.QuerySelector("h1").TextContent == "Выбор комплектации автомобиля" || document.QuerySelector("h1").TextContent == "Выбор модификации")
+            if (document.QuerySelector("h1").TextContent == "Выбор комплектации автомобиля" || document.QuerySelector("h1").TextContent == "Выбор модификации") // Checks if certain car model has any complectaions or modifications
             {
                 address = "https://www.ilcats.ru";
                 var cellSelector = " tr";
-                var cells = document.QuerySelectorAll(cellSelector);
-                if (cells.Length == 0)
+                var cells = document.QuerySelectorAll(cellSelector); // Selects cells that are displayed as table
+                if (cells.Length == 0) // If cells are not displayed like a table, checks if they are displayed like a List
                 {
                     cellSelector = " div.name";
-                    cells = document.QuerySelectorAll(cellSelector);
+                    cells = document.QuerySelectorAll(cellSelector); // Selects cells that are displayed like a list of link to primary parts of certain complectation
                     for (int k = 1; k < cells.Length; k++)
                     {
                         var complectation = new Complectation()
@@ -46,7 +47,7 @@ namespace ConsoleApp3.Repositories
                         await _primaryPartRepository.Create(address + cells[k].Children[0].GetAttribute("href"), complectation);
                     }
                 }
-                else
+                else // If cells are displayed like a table, moves to this else statement
                 {
 
                     for (var i = 1; i < cells.Length; i++)
@@ -81,7 +82,7 @@ namespace ConsoleApp3.Repositories
                     await _db.SaveChangesAsync();
                 }
             }
-            else
+            else // If car model doesn't have complectation, creates entity corresponding with certain car model
             {
                 var complectation = new Complectation()
                 {

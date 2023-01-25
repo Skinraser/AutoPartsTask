@@ -23,6 +23,7 @@ namespace ConsoleApp3.Repositories
             _context = BrowsingContext.New(_config);
             _carModelRepository = new CarModelRepository();
         }
+        // Creation of Market entity
         public async Task Create(string address, Brand brand)
         {
             var document = await _context.OpenAsync(address);
@@ -31,7 +32,7 @@ namespace ConsoleApp3.Repositories
                 address = "https://www.ilcats.ru";
                 var cellSelector = " div.name a";
                 var cells = document.QuerySelectorAll(cellSelector);
-                for (var i = 1; i<= cells.Length; i++)
+                for (var i = 1; i<= cells.Length; i++) // Iteration through markets of certain brand
                 {
                     var market = new Market()
                     {
@@ -44,7 +45,7 @@ namespace ConsoleApp3.Repositories
                 }
                 await _db.SaveChangesAsync();
             }
-            else
+            else // If brand doesn't have markets, code moves to this place and create single market corresponding with certain brand 
             {
                 var market = new Market()
                 {

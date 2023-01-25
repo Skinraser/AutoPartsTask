@@ -22,15 +22,16 @@ namespace ConsoleApp3.Repositories
             _context = BrowsingContext.New(_config);
             _complectationRepository = new ComplectationRepository();
         }
+        // Creation of Car model entity
         public async Task Create(string address, Market market)
         {
             var document = await _context.OpenAsync(address);
             address = "https://www.ilcats.ru";
             var headerCellSelector = "div.Multilist > div.List";
             var headerCells = document.QuerySelectorAll(headerCellSelector);
-            for (var i = 0; i < headerCells.Length; i++)
+            for (var i = 0; i < headerCells.Length; i++) // Iteration through car model entities
             {
-                for (int j = 0; j <headerCells[i].Children[1].ChildElementCount; j++)
+                for (int j = 0; j <headerCells[i].Children[1].ChildElementCount; j++) // Iteration through certain car model cells with information
                 { 
                     var complectation = headerCells[i].GetElementsByClassName("comment").FirstOrDefault()?.TextContent;
                     var code = headerCells[i].GetElementsByClassName("code").FirstOrDefault()?.TextContent;

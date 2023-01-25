@@ -22,15 +22,16 @@ namespace ConsoleApp3.Repositories
             _context = BrowsingContext.New(_config);
             _subPartRepository = new SubPartRepository();
         }
+        // Creates Primary part entity of certain Complectation
         public async Task Create(string address, Complectation complectation)
         {
             var document = await _context.OpenAsync(address);
-            if (document.QuerySelector("h1").TextContent == "Выбор группы запчастей")
+            if (document.QuerySelector("h1").TextContent == "Выбор группы запчастей") // Checks if complectation have Primary parts
             {
                 address = "https://www.ilcats.ru";
                 var cellSelector = " div.name a";
                 var cells = document.QuerySelectorAll(cellSelector);
-                for (var i = 0; i < cells.Length; i++)
+                for (var i = 0; i < cells.Length; i++) // Iterates throw a list of primary parts
                 {
                     var primaryPart = new PrimaryPart()
                     {
