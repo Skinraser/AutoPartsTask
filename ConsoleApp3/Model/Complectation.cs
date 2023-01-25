@@ -12,7 +12,7 @@ namespace ConsoleApp3.Model
         [Required]
         [Key]
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public string? Date { get; set; }
         public string? Engine { get; set; }
         public string? Body { get; set; }
@@ -26,6 +26,8 @@ namespace ConsoleApp3.Model
         public string? Destination { get; set; }
         public string? FuelInduction { get; set; }
         public string? BuildingCondition { get; set; }
+        public string? DoorsCount   { get; set; }
+        public string? Transmission { get; set; }
         public int CarModelId { get; set; }
         public ICollection<PrimaryPart> PrimaryParts { get; set; }
     }

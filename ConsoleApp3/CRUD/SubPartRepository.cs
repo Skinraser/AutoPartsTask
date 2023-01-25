@@ -22,7 +22,7 @@ namespace ConsoleApp3.CRUD
             _partRepository = new PartRepository();
         }
 
-        public async Task CreateSubPart(string address, PrimaryPart primaryPart, Complectation complectation, CarModel carModel)
+        public async Task CreateSubPart(string address, PrimaryPart primaryPart)
         {
             var document = await _context.OpenAsync(address);
             address = "https://www.ilcats.ru";

@@ -21,7 +21,7 @@ namespace ConsoleApp3.CRUD
             _context = BrowsingContext.New(_config);
             _subPartRepository = new SubPartRepository();
         }
-        public async Task CreatePrimaryPart(string address, CarModel carModel, Complectation complectation)
+        public async Task CreatePrimaryPart(string address, Complectation complectation)
         {
             var document = await _context.OpenAsync(address);
             if (document.QuerySelector("h1").TextContent == "Выбор группы запчастей")
@@ -38,31 +38,31 @@ namespace ConsoleApp3.CRUD
                     };
                     _db.PrimaryParts.Add(primaryPart);
                     await _db.SaveChangesAsync();
-                    await _subPartRepository.CreateSubPart(address + cells[i].GetAttribute("href"), primaryPart, complectation, carModel);
+                    await _subPartRepository.CreateSubPart(address + cells[i].GetAttribute("href"), primaryPart);
                 }
                 await _db.SaveChangesAsync();
             }
         }
-        public async Task CreatePrimaryPart(string address, CarModel carModel)
-        {
-            var document = await _context.OpenAsync(address);
-            if (document.QuerySelector("h1").TextContent == "Выбор группы запчастей")
-            {
-                address = "https://www.ilcats.ru";
-                var cellSelector = " div.name a";
-                var cells = document.QuerySelectorAll(cellSelector);
-                for (var i = 0; i < cells.Length; i++)
-                {
-                    var primaryPart = new PrimaryPart()
-                    {
-                        Name = cells[i].TextContent,
-                    };
-                    _db.PrimaryParts.Add(primaryPart);
-                    await _db.SaveChangesAsync();
-                    await _subPartRepository.CreateSubPart(address + cells[i].GetAttribute("href"), primaryPart, carModel);
-                }
-                await _db.SaveChangesAsync();
-            }
-        }
+        //public async Task CreatePrimaryPart(string address, Complectation complectation)
+        //{
+        //    var document = await _context.OpenAsync(address);
+        //    if (document.QuerySelector("h1").TextContent == "Выбор группы запчастей")
+        //    {
+        //        address = "https://www.ilcats.ru";
+        //        var cellSelector = " div.name a";
+        //        var cells = document.QuerySelectorAll(cellSelector);
+        //        for (var i = 0; i < cells.Length; i++)
+        //        {
+        //            var primaryPart = new PrimaryPart()
+        //            {
+        //                Name = cells[i].TextContent,
+        //            };
+        //            _db.PrimaryParts.Add(primaryPart);
+        //            await _db.SaveChangesAsync();
+        //            await _subPartRepository.CreateSubPart(address + cells[i].GetAttribute("href"), primaryPart);
+        //        }
+        //        await _db.SaveChangesAsync();
+        //    }
+        //}
     }
 }

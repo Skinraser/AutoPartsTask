@@ -13,7 +13,7 @@ namespace ConsoleApp3.Model
         [Key]
         public int Id { get; set; }
         public string Model { get; set; }
-        public string Code { get; set; }
+        public string?  Code { get; set; }
         public string? ProductionYear { get; set; }
         public string? Type { get; set; }
         public int? MarketId { get; set; }
