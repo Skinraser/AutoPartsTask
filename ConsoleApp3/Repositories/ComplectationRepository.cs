@@ -51,10 +51,10 @@ namespace ConsoleApp3.Repositories
 
                     for (var i = 1; i < cells.Length; i++)
                     {
-
+                        var name = cells[i].GetElementsByClassName("modelCode").FirstOrDefault()?.TextContent;
                         var complectation = new Complectation()
                         {
-                            Name = cells[i].GetElementsByClassName("name").FirstOrDefault()?.TextContent,
+                            Name = name ??= cells[i].GetElementsByClassName("name").FirstOrDefault()?.TextContent,
                             Date = cells[i].GetElementsByClassName("dateRange").FirstOrDefault()?.TextContent,
                             Engine = cells[i].GetElementsByClassName("01").FirstOrDefault()?.TextContent,
                             Body = cells[i].GetElementsByClassName("03").FirstOrDefault()?.TextContent,
@@ -75,7 +75,7 @@ namespace ConsoleApp3.Repositories
                         };
                         _db.Complectations.Add(complectation);
                         await _db.SaveChangesAsync();
-                        await _primaryPartRepository.Create(address + cells[i].GetElementsByClassName("a").FirstOrDefault()?.GetAttribute("href"), complectation);
+                        await _primaryPartRepository.Create(address + cells[i].GetElementsByTagName("a").FirstOrDefault()?.GetAttribute("href"), complectation);
 
                     }
                     await _db.SaveChangesAsync();

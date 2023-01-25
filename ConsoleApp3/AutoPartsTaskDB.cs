@@ -27,10 +27,6 @@ namespace ConsoleApp3
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<Brand>()
-            //    .HasOne<Grade>(s => s.Grade)
-            //    .WithMany(g => g.Students)
-            //    .HasForeignKey(s => s.CurrentGradeId);
         }
     }
 }
