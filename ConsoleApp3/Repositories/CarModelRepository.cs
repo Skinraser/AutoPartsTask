@@ -1,4 +1,5 @@
 ﻿using AngleSharp;
+using ConsoleApp3.Interfaces;
 using ConsoleApp3.Model;
 using System;
 using System.Collections.Generic;
@@ -6,14 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApp3.CRUD
+namespace ConsoleApp3.Repositories
 {
-    public class CarModelRepository
+    public class CarModelRepository : ICarModelRepository
     {
         AutoPartsTaskContext _db;
         IConfiguration _config;
         IBrowsingContext _context;
-        ComplectationRepository _complectationRepository;
+        IComplectationRepository _complectationRepository;
         public CarModelRepository()
         {
             _db = new AutoPartsTaskContext();
@@ -21,7 +22,7 @@ namespace ConsoleApp3.CRUD
             _context = BrowsingContext.New(_config);
             _complectationRepository = new ComplectationRepository();
         }
-        public async Task CreateCarModel(string address, Market market)
+        public async Task Create(string address, Market market)
         {
             var document = await _context.OpenAsync(address);
             address = "https://www.ilcats.ru";
@@ -43,8 +44,8 @@ namespace ConsoleApp3.CRUD
                     };
                     _db.CarModels.Add(carModel);
                     await _db.SaveChangesAsync();
-                    var adress = headerCells[i].Children[0].Children[0].GetAttribute("href");
-                    await _complectationRepository.CreateComplectation(address + headerCells[i].Children[j].GetElementsByTagName("a").FirstOrDefault()?.GetAttribute("href"), carModel);
+                    var adress = headerCells[i].Children[1].Children[j].GetElementsByTagName("a").FirstOrDefault()?.GetAttribute("href");
+                    await _complectationRepository.Create(address + headerCells[i].Children[1].Children[j].GetElementsByTagName("a").FirstOrDefault()?.GetAttribute("href"), carModel);
                 }
             }
             await _db.SaveChangesAsync();

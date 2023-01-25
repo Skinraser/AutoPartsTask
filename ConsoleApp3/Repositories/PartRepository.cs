@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApp3.CRUD
+namespace ConsoleApp3.Repositories
 {
     public class PartRepository
     {

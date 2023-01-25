@@ -8,16 +8,16 @@ using System.Threading.Tasks;
 using System.Configuration;
 
 using ConsoleApp3.Model;
+using ConsoleApp3.Interfaces;
 
-namespace ConsoleApp3.CRUD
+namespace ConsoleApp3.Repositories
 {
-    public class BrandRepository
+    public class BrandRepository : IBrandRepository
     {
         AutoPartsTaskContext _db;
         IConfiguration _config;
         IBrowsingContext _context;
-        string address = "https://www.ilcats.ru";
-        MarketRepository _marketRepository;
+        IMarketRepository _marketRepository;
         public BrandRepository()
         {
             _db = new AutoPartsTaskContext();
@@ -25,7 +25,7 @@ namespace ConsoleApp3.CRUD
             _context = BrowsingContext.New(_config);
             _marketRepository = new MarketRepository();
         }
-        public async Task CreateBrand()
+        public async Task Create(string address)
         {
             var document = await _context.OpenAsync(address);
             var cellSelector = " div.CatalogGroup a";
@@ -38,7 +38,7 @@ namespace ConsoleApp3.CRUD
                 };
                 _db.Brands.Add(brand);
                 await _db.SaveChangesAsync();
-                await _marketRepository.CreateMarket(address + cells[i-1].GetAttribute("href"), brand);
+                await _marketRepository.Create(address + cells[i-1].GetAttribute("href"), brand);
             }
             await _db.SaveChangesAsync();
 

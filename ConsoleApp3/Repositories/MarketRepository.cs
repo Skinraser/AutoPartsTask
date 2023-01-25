@@ -1,4 +1,5 @@
 ﻿using AngleSharp;
+using ConsoleApp3.Interfaces;
 using ConsoleApp3.Model;
 using System;
 using System.Collections.Generic;
@@ -6,14 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApp3.CRUD
+namespace ConsoleApp3.Repositories
 {
-    public class MarketRepository
+    public class MarketRepository : IMarketRepository
     {
         AutoPartsTaskContext _db;
         IConfiguration _config;
         IBrowsingContext _context;
-        CarModelRepository _carModelRepository;
+        ICarModelRepository _carModelRepository;
         
         public MarketRepository()
         {
@@ -22,7 +23,7 @@ namespace ConsoleApp3.CRUD
             _context = BrowsingContext.New(_config);
             _carModelRepository = new CarModelRepository();
         }
-        public async Task CreateMarket(string address, Brand brand)
+        public async Task Create(string address, Brand brand)
         {
             var document = await _context.OpenAsync(address);
             if (document.QuerySelector("h1").TextContent == "Выбор рынка")
@@ -39,7 +40,7 @@ namespace ConsoleApp3.CRUD
                     };
                     _db.Markets.Add(market);
                     await _db.SaveChangesAsync();
-                    await _carModelRepository.CreateCarModel(address + cells[i - 1].GetAttribute("href"), market);
+                    await _carModelRepository.Create(address + cells[i - 1].GetAttribute("href"), market);
                 }
                 await _db.SaveChangesAsync();
             }
@@ -52,7 +53,7 @@ namespace ConsoleApp3.CRUD
                 };
                 _db.Markets.Add(market);
                 await _db.SaveChangesAsync();
-                await _carModelRepository.CreateCarModel(address, market);
+                await _carModelRepository.Create(address, market);
             }
         }
     }

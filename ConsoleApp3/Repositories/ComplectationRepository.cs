@@ -1,4 +1,5 @@
 ﻿using AngleSharp;
+using ConsoleApp3.Interfaces;
 using ConsoleApp3.Model;
 using System;
 using System.Collections.Generic;
@@ -6,14 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApp3.CRUD
+namespace ConsoleApp3.Repositories
 {
-    public class ComplectationRepository
+    public class ComplectationRepository : IComplectationRepository
     {
         AutoPartsTaskContext _db;
         IConfiguration _config;
         IBrowsingContext _context;
-        PrimaryPartRepository _primaryPartRepository;
+        IPrimaryPartRepository _primaryPartRepository;
         public ComplectationRepository()
         {
             _db = new AutoPartsTaskContext();
@@ -21,7 +22,7 @@ namespace ConsoleApp3.CRUD
             _context = BrowsingContext.New(_config);
             _primaryPartRepository = new PrimaryPartRepository();
         }
-        public async Task CreateComplectation(string address, CarModel carModel)
+        public async Task Create(string address, CarModel carModel)
         {
             var document = await _context.OpenAsync(address);
             if (document.QuerySelector("h1").TextContent == "Выбор комплектации автомобиля" || document.QuerySelector("h1").TextContent == "Выбор модификации")
@@ -42,7 +43,7 @@ namespace ConsoleApp3.CRUD
                         };
                         _db.Complectations.Add(complectation);
                         await _db.SaveChangesAsync();
-                        await _primaryPartRepository.CreatePrimaryPart(address + cells[k].Children[0].GetAttribute("href"), complectation);
+                        await _primaryPartRepository.Create(address + cells[k].Children[0].GetAttribute("href"), complectation);
                     }
                 }
                 else
@@ -74,7 +75,7 @@ namespace ConsoleApp3.CRUD
                         };
                         _db.Complectations.Add(complectation);
                         await _db.SaveChangesAsync();
-                        await _primaryPartRepository.CreatePrimaryPart(address + cells[i].GetElementsByClassName("a").FirstOrDefault()?.GetAttribute("href"), complectation);
+                        await _primaryPartRepository.Create(address + cells[i].GetElementsByClassName("a").FirstOrDefault()?.GetAttribute("href"), complectation);
 
                     }
                     await _db.SaveChangesAsync();
@@ -89,7 +90,7 @@ namespace ConsoleApp3.CRUD
                 };
                 _db.Complectations.Add(complectation);
                 await _db.SaveChangesAsync();
-                await _primaryPartRepository.CreatePrimaryPart(address, complectation);
+                await _primaryPartRepository.Create(address, complectation);
             }
         }
     }
